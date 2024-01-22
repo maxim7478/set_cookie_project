@@ -1,0 +1,13 @@
+.idea/
+setup_env_data.sh
+.idea/
+.vscode/
+__pycache__/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+docs/_build/
+dist/
+venv/
+setup_before_start.sh
