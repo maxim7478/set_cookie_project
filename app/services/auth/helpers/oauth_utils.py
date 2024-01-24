@@ -1,5 +1,5 @@
 from passlib.context import CryptContext
-from app.services.users.models.models import Emails, Users, Phones
+from app.services.auth.models.models import Emails, Users, Phones
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

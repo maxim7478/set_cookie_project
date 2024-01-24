@@ -3,11 +3,10 @@ from flask_jwt_extended import (create_access_token,
                                 set_refresh_cookies, unset_jwt_cookies, get_jwt
                                 )
 from flask import jsonify, make_response
-import datetime
 import logging
 
 from app.db import db
-from app.services.users.models.models import Password, Emails, UserRole, Users, Phones
+from app.services.auth.models.models import Password, Emails, Users
 from app.services.auth.helpers.oauth_utils import get_user_by_email, verify_password, hash_password, get_user_by_id
 
 
@@ -141,13 +140,10 @@ def registration_user(form_data):
         form_data["password"] = hash_password(form_data["password"])
         del form_data["passwordConfirm"]
 
-        user_role = UserRole.query.filter(UserRole.code == 'user').first()
-
         new_user = Users()
         new_user.name = form_data["name"]
         new_user.surname = form_data["surname"]
         new_user.second_name = form_data["second_name"]
-        new_user.role = user_role.id
         new_user.source = ""
         new_user.is_active = True
         db.session.add(new_user)
@@ -169,18 +165,8 @@ def registration_user(form_data):
         db.session.add(new_email)
         db.session.commit()
 
-        new_phone = Phones()
-        new_phone.phone_number = form_data["phone"]
-        new_phone.user_id = new_user.id
-        new_phone.source = new_user.id
-        new_phone.is_active = True
-
-        db.session.add(new_phone)
-        db.session.commit()
-
         current_user = new_user.to_dict()
         current_user['email'] = new_email.email
-        current_user['phone'] = new_phone.phone_number
 
         status = 201
         response_obj = {
